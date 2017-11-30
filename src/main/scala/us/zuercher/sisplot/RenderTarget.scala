@@ -21,7 +21,7 @@ class VertsRenderTarget(w: Writer) extends RenderTarget
 {
   override def apply(r: Double, theta: Double): Try[Unit] = {
     Try {
-      w.write("%g %g\n".format(r, theta))
+      w.write("%.5f %.5f\n".format(theta, r))
     }
   }
 
@@ -54,27 +54,19 @@ abstract class BufferingRenderTarget(val renderTarget: RenderTarget) extends Ren
 /*
  * NormalizingRenderTarget extends BufferingRenderTarget to normalize
  * vertices before writing. All radii values are scaled to the unit
- * circle (such that -1 <= r <= 1). All angles are normalized (such
- * that 0 <= θ <= 2π).
+ * circle (such that -1 <= r <= 1).
  */
 class NormalizingRenderTarget(renderTarget: RenderTarget)
     extends BufferingRenderTarget(renderTarget)
 {
-  private val Tau = 2.0*math.Pi
-
   override def close(): Try[Unit] = {
     val maxR = buffer.map { case (r, _) => math.abs(r) }.max
     val normalizeFactor = if (maxR > 0.0) maxR else 1.0
 
     buffer = buffer.map { case (r, theta) =>
       val normalizedR = math.min(1.0, math.max(-1.0, r / normalizeFactor))
-      val normalizedTheta = theta match {
-        case theta if theta > Tau  => theta % Tau
-        case theta if theta < -Tau => theta % Tau
-        case theta                 => theta
-      }
 
-      (normalizedR, normalizedTheta)
+      (normalizedR, theta)
     }
 
     super.close()
@@ -127,7 +119,7 @@ class SVGRenderTarget(w: Writer, size: Int) extends RenderTarget
         w.write(" ")
       }
 
-      w.write("%g,%g".format(x, y))
+      w.write("%.5f,%.5f".format(x, y))
     }
   }
 

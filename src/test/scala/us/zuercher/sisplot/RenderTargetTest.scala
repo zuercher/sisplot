@@ -24,8 +24,8 @@ class RenderTargetTest extends FunSpec with Matchers
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
-        List((1.0, 2.0), (2.0, 3.0), (3.0, 4.0))
-          .map { case (r, t) => "%g %g\n".format(r, t) }.mkString("")
+        List((2.0, 1.0), (3.0, 2.0), (4.0, 3.0))
+          .map { case (r, t) => "%.5f %.5f\n".format(r, t) }.mkString("")
       )
     }
 
@@ -48,8 +48,8 @@ class RenderTargetTest extends FunSpec with Matchers
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
-        List((1.0, 2.0), (2.0, 3.0), (3.0, 4.0))
-          .map { case (r, t) => "%g %g\n".format(r, t) }.mkString("")
+        List((2.0, 1.0), (3.0, 2.0), (4.0, 3.0))
+          .map { case (r, t) => "%.5f %.5f\n".format(r, t) }.mkString("")
       )
     }
 
@@ -71,8 +71,8 @@ class RenderTargetTest extends FunSpec with Matchers
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
-        List((0.25, 1.0), (1.0, 2.0), (-0.5, 3.0))
-          .map { case (r, t) => "%g %g\n".format(r, t) }.mkString("")
+        List((1.0, 0.25), (2.0, 1.0), (3.0, -0.5))
+          .map { case (r, t) => "%.5f %.5f\n".format(r, t) }.mkString("")
       )
     }
 
@@ -85,12 +85,12 @@ class RenderTargetTest extends FunSpec with Matchers
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
-        List((0.5, 1.0), (1.0, 2.0), (-0.25, 3.0))
-          .map { case (r, t) => "%g %g\n".format(r, t) }.mkString("")
+        List((1.0, 0.5), (2.0, 1.0), (3.0, -0.25))
+          .map { case (r, t) => "%.5f %.5f\n".format(r, t) }.mkString("")
       )
     }
 
-    it("should normalize theta to 2π") {
+    it("should not normalize theta to 2π") {
       val sw = new StringWriter
       val rt = new NormalizingRenderTarget(new VertsRenderTarget(sw))
 
@@ -105,8 +105,8 @@ class RenderTargetTest extends FunSpec with Matchers
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
-        List((1.0, pi), (1.0, twoPi), (1.0, pi), (1.0, -pi), (1.0, -twoPi))
-          .map { case (r, t) => "%g %g\n".format(r, t) }.mkString("")
+        List((pi, 1.0), (twoPi, 1.0), (threePi, 1.0), (-threePi, 1.0), (-twoPi, 1.0))
+          .map { case (r, t) => "%.5f %.5f\n".format(r, t) }.mkString("")
       )
     }
   }
