@@ -1,9 +1,10 @@
 r = 0
+t = 0
 for loop over [0, 16) by 1 {
   for theta over [0, 2*pi) by pi/16 {
     r = r + 10 * theta / 2*pi
-    _ = render(r, theta)
+    render(r, t + theta)
   }
   r = r + 10
-  _ = render(r, 2*pi)
+  t = t + 2*pi
 }
