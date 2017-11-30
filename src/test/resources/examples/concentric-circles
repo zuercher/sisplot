@@ -1,0 +1,9 @@
+max_r = 100
+max_theta = 2*pi
+render(0, 0)
+for r over [0, max_r] by 10 {
+  for theta over [0, max_theta) by pi/16 {
+    render(r, theta)
+  }
+  render(r, max_theta)
+}
