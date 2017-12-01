@@ -1,0 +1,9 @@
+No unary minus. (Particularly useful for named constants so you can
+write -pi.)
+
+Pretty sure a-b-c evaluates as if it were a-(b-c), which is
+incorrect. 5-2-1 = 2, 5-(2-1) = 4
+
+Comment blocks would be nice.
+
+Arcs don't seem to work on sisbot
