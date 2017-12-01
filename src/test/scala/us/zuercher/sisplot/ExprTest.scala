@@ -4,7 +4,7 @@ import com.twitter.util.{Return, Throw, Try}
 import org.scalatest.{FunSpec, Matchers}
 import scala.math
 
-object ExprTestContext extends RuntimeContext((_, _) => Throw(new Exception("unexpected")))
+object ExprTestContext extends RuntimeContext(FailingRenderTarget)
 {
   assign("a", 1.0)
   assign("b", 2.0)
@@ -70,8 +70,8 @@ class ExprTest extends FunSpec with Matchers
       }
 
       it("should successfully call all functions") {
-        var counter = 0
-        val ctxt = new RuntimeContext((_, _) => { counter += 1; Return.Unit })
+        val counter = new CountingRenderTarget
+        val ctxt = new RuntimeContext(counter)
 
         Functions.AllNames.foreach { name =>
           val numArgs = Functions.NumArgsFor(name).get
@@ -82,8 +82,8 @@ class ExprTest extends FunSpec with Matchers
           Call(name, args).evaluate(ctxt).map { _ => Unit } should equal(Return(Unit))
         }
 
-        // at least one render call
-        counter should be >= 1
+        // At least one render call
+        counter.count() should be >= 1
       }
     }
   }

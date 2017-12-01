@@ -29,9 +29,9 @@ trait Context
   def range(start: Double, end: Double, step: Option[Double], inclusive: Boolean): Iterator[Double]
 
   /*
-   * Renders a vertex at the given radius and angle (in radians).
+   * Returns the current RenderTarget.
    */
-  def render(r: Double, theta: Double): Try[Unit]
+  def render: RenderTarget
 
   /*
    * Invoke the given function with the given args. Failures include
@@ -95,14 +95,14 @@ class ValidatingContext extends ContextBase
     }
   }
 
-  override def render(r: Double, theta: Double): Try[Unit] = Return.Unit
+  override val render = NoopRenderTarget
 }
 
 /*
  * RuntimeContext extends ContextBase to provide a program execution
  * Context.
  */
-class RuntimeContext(val renderTarget: (Double, Double) => Try[Unit]) extends ContextBase
+class RuntimeContext(val renderTarget: RenderTarget) extends ContextBase
 {
   private val DefaultStep = 0.01
 
@@ -161,5 +161,5 @@ class RuntimeContext(val renderTarget: (Double, Double) => Try[Unit]) extends Co
     return new RevIter(start, end, step.getOrElse(-DefaultStep))
   }
 
-  override def render(r: Double, theta: Double) = renderTarget(r, theta)
+  override val render = renderTarget
 }

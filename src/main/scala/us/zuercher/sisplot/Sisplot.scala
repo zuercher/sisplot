@@ -22,6 +22,7 @@ object Sisplot extends App
 
   val svg = flag("svg", false, "enable SVG output (forces normalization)")
   val svgSize = flag("svg-size", 1000, "default size of exported SVG")
+  val svgDrawUnitCircle = flag("svg-unit-circle", false, "Draw the unit circle on the SVG")
 
   def main() {
     val in =
@@ -42,7 +43,7 @@ object Sisplot extends App
 
     val baseTarget =
       svg() match {
-        case true  => new SVGRenderTarget(out, svgSize())
+        case true  => new SVGRenderTarget(out, svgSize(), svgDrawUnitCircle())
         case false => new VertsRenderTarget(out)
       }
 
@@ -66,7 +67,7 @@ object Sisplot extends App
       val ctxt = new RuntimeContext(target)
 
       Try.collect { statements.map { _.execute(ctxt) } }
-        .map { _ => target.close() }
+        .flatMap { _ => target.close() }
     }
   }
 }

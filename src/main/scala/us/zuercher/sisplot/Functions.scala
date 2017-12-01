@@ -41,14 +41,15 @@ object Functions
   private val render = new F {
     override val numArgs = 2
     override def apply(ctxt: Context, args: Seq[Double]) =
-      require2(args).flatMap { case (r, theta) => ctxt.render(r, theta).map { _ => 0.0 } }
+      require2(args).flatMap { case (r, theta) => ctxt.render.vertex(r, theta).map { _ => 0.0 } }
   }
 
+  // Make use of the fact that sisbot will draw a smooth curve at the given radius.
   private val render_arc = new F {
     override val numArgs = 3
     override def apply(ctxt: Context, args: Seq[Double]) = {
-      require3(args).flatMap { case (r, theta, dir) =>
-        ctxt.render(r, theta).flatMap { _ => ctxt.render(r, theta + dir) }.map { _ => 0.0  }
+      require3(args).flatMap { case (r, theta, sweep) =>
+        ctxt.render.arc(r, theta, sweep).map { _ => 0.0 }
       }
     }
   }

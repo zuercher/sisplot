@@ -18,9 +18,9 @@ class RenderTargetTest extends FunSpec with Matchers
     it("should write vertices to the given writer") {
       val sw = new StringWriter
       val rt = new VertsRenderTarget(sw)
-      rt(1.0, 2.0) should equal(Return.Unit)
-      rt(2.0, 3.0) should equal(Return.Unit)
-      rt(3.0, 4.0) should equal(Return.Unit)
+      rt.vertex(1.0, 2.0) should equal(Return.Unit)
+      rt.vertex(2.0, 3.0) should equal(Return.Unit)
+      rt.vertex(3.0, 4.0) should equal(Return.Unit)
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
@@ -32,17 +32,17 @@ class RenderTargetTest extends FunSpec with Matchers
     it("should throw on error") {
       val rt = new VertsRenderTarget(new FailingWriter)
 
-      rt(1.0, 2.0).isThrow should be(true)
+      rt.vertex(1.0, 2.0).isThrow should be(true)
     }
   }
 
   describe("BufferingRenderTarget") {
     it("should buffer vertices until close") {
       val sw = new StringWriter
-      val rt = new BufferingRenderTarget(new VertsRenderTarget(sw)) {}
-      rt(1.0, 2.0) should equal(Return.Unit)
-      rt(2.0, 3.0) should equal(Return.Unit)
-      rt(3.0, 4.0) should equal(Return.Unit)
+      val rt = new BufferingRenderTarget(new VertsRenderTarget(sw))
+      rt.vertex(1.0, 2.0) should equal(Return.Unit)
+      rt.vertex(2.0, 3.0) should equal(Return.Unit)
+      rt.vertex(3.0, 4.0) should equal(Return.Unit)
 
       sw.toString should be('empty)
       rt.close() should equal(Return.Unit)
@@ -54,9 +54,9 @@ class RenderTargetTest extends FunSpec with Matchers
     }
 
     it("should throw errors on close") {
-      val rt = new BufferingRenderTarget(new VertsRenderTarget(new FailingWriter)) {}
+      val rt = new BufferingRenderTarget(new VertsRenderTarget(new FailingWriter))
 
-      rt(1.0, 2.0) should equal(Return.Unit)
+      rt.vertex(1.0, 2.0) should equal(Return.Unit)
       rt.close().isThrow should be(true)
     }
   }
@@ -65,9 +65,9 @@ class RenderTargetTest extends FunSpec with Matchers
     it("should normalize large radii to |1.0|") {
       val sw = new StringWriter
       val rt = new NormalizingRenderTarget(new VertsRenderTarget(sw))
-      rt(1.0, 1.0) should equal(Return.Unit)
-      rt(4.0, 2.0) should equal(Return.Unit)
-      rt(-2.0, 3.0) should equal(Return.Unit)
+      rt.vertex(1.0, 1.0) should equal(Return.Unit)
+      rt.vertex(4.0, 2.0) should equal(Return.Unit)
+      rt.vertex(-2.0, 3.0) should equal(Return.Unit)
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
@@ -79,9 +79,9 @@ class RenderTargetTest extends FunSpec with Matchers
     it("should normalize small radii to |1.0|") {
       val sw = new StringWriter
       val rt = new NormalizingRenderTarget(new VertsRenderTarget(sw))
-      rt(0.25, 1.0) should equal(Return.Unit)
-      rt(0.5, 2.0) should equal(Return.Unit)
-      rt(-0.125, 3.0) should equal(Return.Unit)
+      rt.vertex(0.25, 1.0) should equal(Return.Unit)
+      rt.vertex(0.5, 2.0) should equal(Return.Unit)
+      rt.vertex(-0.125, 3.0) should equal(Return.Unit)
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
@@ -97,11 +97,11 @@ class RenderTargetTest extends FunSpec with Matchers
       val pi = math.Pi
       val twoPi = math.Pi*2.0
       val threePi = math.Pi*3.0
-      rt(1.0, pi) should equal(Return.Unit)
-      rt(1.0, twoPi) should equal(Return.Unit)
-      rt(1.0, threePi) should equal(Return.Unit)
-      rt(1.0, -threePi) should equal(Return.Unit)
-      rt(1.0, -twoPi) should equal(Return.Unit)
+      rt.vertex(1.0, pi) should equal(Return.Unit)
+      rt.vertex(1.0, twoPi) should equal(Return.Unit)
+      rt.vertex(1.0, threePi) should equal(Return.Unit)
+      rt.vertex(1.0, -threePi) should equal(Return.Unit)
+      rt.vertex(1.0, -twoPi) should equal(Return.Unit)
       rt.close() should equal(Return.Unit)
 
       sw.toString should equal(
